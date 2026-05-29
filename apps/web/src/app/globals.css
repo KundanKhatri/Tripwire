@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: radial-gradient(1200px 600px at 70% -10%, rgba(91, 140, 255, 0.12), transparent),
+    #06070d;
+  color: #e7eaf3;
+  min-height: 100vh;
+}
+
+::selection {
+  background: rgba(91, 140, 255, 0.35);
+}
+
+.grid-bg {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
