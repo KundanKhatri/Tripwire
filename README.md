@@ -95,11 +95,15 @@ This repository is MIT-licensed for code. Per the Microsoft Build AI 2026 Hackat
 
 - [x] Strategy locked
 - [x] Architecture designed
-- [ ] Azure provisioned
-- [ ] L1 layer shipping live attacks blocked
-- [ ] L2-L5 layers
-- [ ] Arena UI deployed
+- [x] Azure provisioned — embeddings + Content Safety Prompt Shields **live & verified** (`scripts/verify_azure.py`)
+- [x] L1 semantic firewall — pattern bank + Prompt Shields + embedding similarity (working)
+- [x] L2–L3 layers (provenance, canary) implemented; L4–L5 skeletons wired
+- [x] Arena UI built (live local mirror; production build verified)
+- [ ] Arena UI deployed to public URL
+- [ ] Victim agent (gpt-oss-120b via Foundry MaaS)
 - [ ] Benchmark report
 - [ ] Pitch video
+
+See [docs/PROVISIONING_LOG.md](docs/PROVISIONING_LOG.md) for the live Azure state and [docs/DATA_DECISIONS.md](docs/DATA_DECISIONS.md) for the evidence behind every design choice.
 
 Prototype submission target: **June 7, 2026, 06:29 PM UTC**. Final: **June 30, 2026**.
