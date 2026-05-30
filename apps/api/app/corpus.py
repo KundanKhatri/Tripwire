@@ -16,8 +16,23 @@ from typing import Any
 
 from app.azure_clients import EmbeddingsClient
 
-# corpus.py is at apps/api/app/ → repo root is parents[3]
-_CORPUS_PATH = Path(__file__).resolve().parents[3] / "packages" / "attack-corpus" / "seeds.jsonl"
+# Look for the seed corpus in multiple locations so it works both in local dev
+# (repo layout) and inside the container (bundled copy under app/data/).
+_HERE = Path(__file__).resolve()
+_CANDIDATE_PATHS = [
+    _HERE.parent / "data" / "seeds.jsonl",  # bundled in container build context
+    _HERE.parents[3] / "packages" / "attack-corpus" / "seeds.jsonl",  # repo root
+]
+
+
+def _resolve_corpus_path() -> Path | None:
+    for p in _CANDIDATE_PATHS:
+        if p.exists():
+            return p
+    return None
+
+
+_CORPUS_PATH = _resolve_corpus_path() or _CANDIDATE_PATHS[0]
 
 
 def _cosine(a: list[float], b: list[float]) -> float:

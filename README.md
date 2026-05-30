@@ -3,7 +3,7 @@
 **Theme:** Security in the Agentic Future
 **Hackathon:** Microsoft Build AI 2026
 **Team size:** 1 (solo)
-**Live demo:** https://tripwire-arena.azurewebsites.net (provisioned during build — see [AZURE_SETUP.md](AZURE_SETUP.md))
+**Live demo:** https://kundankhatri.github.io/Tripwire/ (auto-deploys on every push via GitHub Actions). Azure-backed API deploy in progress — see [docs/PROVISIONING_LOG.md](docs/PROVISIONING_LOG.md).
 
 > A real-time prompt-injection and exfiltration defense layer for agentic systems, built natively on Azure AI Foundry. Extends Azure AI Content Safety Prompt Shields with four additional defense layers Microsoft does not ship out of the box — capability provenance, canary tokens, behavioral anomaly detection, and a learning classifier — plus a live red-team arena where judges can attack a connected agent and watch TripWire block, classify, and explain each attempt with a reasoning trace.
 
@@ -99,7 +99,9 @@ This repository is MIT-licensed for code. Per the Microsoft Build AI 2026 Hackat
 - [x] L1 semantic firewall — pattern bank + Prompt Shields + embedding similarity (working)
 - [x] L2–L3 layers (provenance, canary) implemented; L4–L5 skeletons wired
 - [x] Arena UI built (live local mirror; production build verified)
-- [ ] Arena UI deployed to public URL
+- [x] Arena UI deployed & live: https://kundankhatri.github.io/Tripwire/ (CI/CD via GitHub Actions)
+- [x] API wired to live Azure (Prompt Shields + embeddings); verified end-to-end
+- [ ] API deployed to Azure Container Apps (so the live arena routes through Azure)
 - [ ] Victim agent (gpt-oss-120b via Foundry MaaS)
 - [ ] Benchmark report
 - [ ] Pitch video
