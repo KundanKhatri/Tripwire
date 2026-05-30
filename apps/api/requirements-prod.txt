@@ -1,0 +1,11 @@
+# Additional production dependencies (Cosmos pgvector, Azure SDKs, telemetry).
+# Install on top of requirements.txt when wiring the persistent corpus + traces.
+-r requirements.txt
+psycopg[binary]==3.2.9
+pgvector==0.3.6
+azure-identity==1.19.0
+azure-ai-contentsafety==1.0.0
+opentelemetry-api==1.29.0
+opentelemetry-sdk==1.29.0
+opentelemetry-instrumentation-fastapi==0.50b0
+azure-monitor-opentelemetry==1.6.5
