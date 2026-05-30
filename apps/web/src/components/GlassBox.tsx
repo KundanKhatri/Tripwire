@@ -9,12 +9,18 @@ import { Eye } from "lucide-react";
 export function GlassBox({
   result,
   source,
+  busy,
 }: {
   result: DefendResponse | null;
   source: "azure" | "local" | null;
+  busy?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-ink-600 bg-ink-900/70 p-5 backdrop-blur">
+    <div
+      className={`relative overflow-hidden rounded-xl border border-ink-600 bg-ink-900/70 p-5 backdrop-blur ${
+        busy ? "scanline" : ""
+      }`}
+    >
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2 text-sm font-medium text-white/70">
           <Eye className="h-4 w-4 text-accent" />

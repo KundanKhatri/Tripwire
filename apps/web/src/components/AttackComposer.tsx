@@ -48,8 +48,9 @@ export function AttackComposer({
         onClick={() => value.trim() && onSubmit(value.trim())}
         disabled={busy || !value.trim()}
         className={cn(
-          "mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-accent px-4 py-3 font-semibold text-ink-950 shadow-glow transition",
-          "hover:bg-accent-glow disabled:cursor-not-allowed disabled:opacity-40"
+          "mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-accent px-4 py-3 font-semibold text-ink-950 transition",
+          "hover:bg-accent-glow disabled:cursor-not-allowed disabled:opacity-40",
+          !busy && "glow-pulse"
         )}
       >
         {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}

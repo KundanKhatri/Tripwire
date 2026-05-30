@@ -64,7 +64,7 @@ export default function Home() {
           </span>
           <h1 className="mt-6 text-balance text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
             Your AI agent is one prompt away from a breach.
-            <span className="text-accent"> TripWire stops it.</span>
+            <span className="grad-text"> TripWire stops it.</span>
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-pretty text-lg leading-relaxed text-white/60">
             A 5-layer prompt-injection and exfiltration defense for agentic systems, built on Azure.
@@ -102,7 +102,7 @@ export default function Home() {
 
         <div className="grid gap-5 lg:grid-cols-2">
           <AttackComposer onSubmit={handleAttack} busy={busy} />
-          <GlassBox result={result} source={source} />
+          <GlassBox result={result} source={source} busy={busy} />
         </div>
       </section>
 
@@ -123,7 +123,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
-                className="rounded-xl border border-ink-600 bg-ink-900/60 p-5"
+                className="card-lift rounded-xl border border-ink-600 bg-ink-900/60 p-5"
               >
                 <span className="grid h-9 w-9 place-items-center rounded-lg bg-accent/15 font-mono text-sm font-bold text-accent">
                   {meta.short}
