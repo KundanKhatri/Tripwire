@@ -93,3 +93,23 @@ body {
 
 /* Shimmer for stat numbers */
 .tabular { font-variant-numeric: tabular-nums; }
+
+/* CSS-only reveal — runs without JS, so content is NEVER invisible on a
+   static export even if hydration is slow or fails. */
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.reveal {
+  opacity: 1; /* visible by default — animation only enhances */
+  animation: revealUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.reveal-1 { animation-delay: 0.05s; }
+.reveal-2 { animation-delay: 0.12s; }
+.reveal-3 { animation-delay: 0.2s; }
+.reveal-4 { animation-delay: 0.28s; }
+.reveal-5 { animation-delay: 0.36s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { animation: none; }
+}

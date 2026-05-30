@@ -35,15 +35,12 @@ export function GlassBox({
 
       <AnimatePresence mode="wait">
         {!result ? (
-          <motion.div
+          <div
             key="empty"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
             className="grid place-items-center py-16 text-center text-sm text-white/35"
           >
             Submit an attack to see every layer&apos;s decision, in order, with latency.
-          </motion.div>
+          </div>
         ) : (
           <motion.div key={result.request_id} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className="mb-4 flex items-center justify-between rounded-lg bg-ink-800/80 p-3">

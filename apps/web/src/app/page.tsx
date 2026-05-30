@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { ShieldHalf, ArrowDown, Github } from "lucide-react";
 import { AttackComposer } from "@/components/AttackComposer";
 import { GlassBox } from "@/components/GlassBox";
@@ -35,7 +34,7 @@ export default function Home() {
   }
 
   return (
-    <main className="grid-bg min-h-screen">
+    <main className="relative min-h-screen">
       {/* Nav */}
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
         <div className="flex items-center gap-2">
@@ -54,11 +53,7 @@ export default function Home() {
 
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-6 pb-8 pt-10 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mx-auto max-w-3xl"
-        >
+        <div className="reveal mx-auto max-w-3xl">
           <span className="inline-block rounded-full border border-accent/30 bg-accent/10 px-3 py-1 font-mono text-xs text-accent">
             Microsoft Build AI 2026 · Security in the Agentic Future
           </span>
@@ -76,12 +71,12 @@ export default function Home() {
           >
             Enter the arena <ArrowDown className="h-4 w-4" />
           </a>
-        </motion.div>
+        </div>
       </section>
 
       {/* Arena */}
       <section id="arena" className="mx-auto max-w-6xl px-6 py-12">
-        <div className="mb-6 flex items-end justify-between">
+        <div className="reveal reveal-1 mb-6 flex items-end justify-between">
           <div>
             <h2 className="text-2xl font-semibold">Live red-team arena</h2>
             <p className="text-sm text-white/50">
@@ -90,17 +85,17 @@ export default function Home() {
           </div>
           <div className="flex gap-6 text-right">
             <div>
-              <p className="font-mono text-2xl font-bold">{stats.tried}</p>
+              <p className="tabular font-mono text-2xl font-bold">{stats.tried}</p>
               <p className="text-xs text-white/40">attacks tried</p>
             </div>
             <div>
-              <p className="font-mono text-2xl font-bold text-block">{stats.blocked}</p>
+              <p className="tabular font-mono text-2xl font-bold text-block">{stats.blocked}</p>
               <p className="text-xs text-white/40">blocked</p>
             </div>
           </div>
         </div>
 
-        <div className="grid gap-5 lg:grid-cols-2">
+        <div className="reveal reveal-2 grid gap-5 lg:grid-cols-2">
           <AttackComposer onSubmit={handleAttack} busy={busy} />
           <GlassBox result={result} source={source} busy={busy} />
         </div>
@@ -108,8 +103,8 @@ export default function Home() {
 
       {/* Layers */}
       <section className="mx-auto max-w-6xl px-6 py-12">
-        <h2 className="mb-2 text-2xl font-semibold">Defense in depth — 5 layers</h2>
-        <p className="mb-6 max-w-2xl text-sm text-white/50">
+        <h2 className="reveal mb-2 text-2xl font-semibold">Defense in depth — 5 layers</h2>
+        <p className="reveal mb-6 max-w-2xl text-sm text-white/50">
           Microsoft ships the firewall (Prompt Shields). We build the fortress around it. Each layer
           catches a class of attack the others can&apos;t.
         </p>
@@ -117,20 +112,16 @@ export default function Home() {
           {LAYER_ORDER.map((name, i) => {
             const meta = LAYER_META[name];
             return (
-              <motion.div
+              <div
                 key={name}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-                className="card-lift rounded-xl border border-ink-600 bg-ink-900/60 p-5"
+                className={`reveal reveal-${Math.min(i + 1, 5)} card-lift rounded-xl border border-ink-600 bg-ink-900/60 p-5`}
               >
                 <span className="grid h-9 w-9 place-items-center rounded-lg bg-accent/15 font-mono text-sm font-bold text-accent">
                   {meta.short}
                 </span>
                 <h3 className="mt-3 font-medium">{meta.label.split("·")[1]?.trim()}</h3>
                 <p className="mt-1.5 text-sm leading-relaxed text-white/55">{meta.blurb}</p>
-              </motion.div>
+              </div>
             );
           })}
         </div>
