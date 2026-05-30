@@ -40,6 +40,13 @@ Because gpt-4o* are quota-zero, the victim agent + Glass Box explainer will use 
 
 Fallback if MaaS deployment is blocked: the template-based explainer in `apps/web/src/lib/localEngine.ts` already produces human-readable trace explanations, so the demo is never blocked on the chat model.
 
+## Live arena + benchmark (2026-05-30)
+
+- **Arena live:** https://kundankhatri.github.io/Tripwire/ (GitHub Actions CI/CD, auto-deploys on push). Static export, real client-side L1 blocking via the local mirror.
+- **API verified on live Azure:** `/defend` blocks novel (no-pattern) attacks via Prompt Shields + embedding similarity; allows benign. See `scripts/verify_azure.py`.
+- **Benchmark (`docs/BENCHMARK.md`):** Full TripWire 90% attack-block / 95% caught / 0% hard FP vs 70% for Prompt-Shields-only. Held-out eval set, live Azure.
+- **Container Apps deploy:** attempted via `az containerapp up` (koreacentral). Interrupted mid ACR-build; core AI resources unaffected. Retry pending — next step is a clean ACA deploy so the live arena routes through the Azure pipeline.
+
 ## Cost posture
 
 Embeddings + Content Safety are the only metered services running. At demo volumes this is a few dollars. gpt-oss-120b at 5000 TPM is generous headroom. Well within $100.
