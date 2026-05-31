@@ -44,7 +44,7 @@ Fallback if MaaS deployment is blocked: the template-based explainer in `apps/we
 
 - **Arena live:** https://kundankhatri.github.io/Tripwire/ (GitHub Actions CI/CD, auto-deploys on push). Static export, real client-side L1 blocking via the local mirror.
 - **API verified on live Azure:** `/defend` blocks novel (no-pattern) attacks via Prompt Shields + embedding similarity; allows benign. See `scripts/verify_azure.py`.
-- **Benchmark (`docs/BENCHMARK.md`):** Full TripWire 90% attack-block / 95% caught / 0% hard FP vs 70% for Prompt-Shields-only. Held-out eval set, live Azure.
+- **Benchmark (`docs/BENCHMARK.md`):** on a held-out eval set against live Azure, Full TripWire (L1) catches strictly more attacks than Prompt-Shields-only at **0% measured false-positive cost**. Verified ranges: Shields-only attack-block ~65–75%; Full TripWire attack-block ~75–80%, attack-caught ~80–90%. (Prompt Shields is nondeterministic on borderline inputs, hence ranges, not single hero numbers.)
 - **Container Apps deploy:** attempted via `az containerapp up` (koreacentral). Interrupted mid ACR-build; core AI resources unaffected. Retry pending — next step is a clean ACA deploy so the live arena routes through the Azure pipeline.
 
 ## Cost posture
