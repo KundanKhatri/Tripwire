@@ -42,3 +42,6 @@ credentials.json
 *.tsbuildinfo
 coverage/
 .azcli-venv/
+
+# internal-only (kept on the internal branch + locally)
+_internal/
