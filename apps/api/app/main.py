@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.deps import startup as build_state
-from app.routes import arena, defend, health, trace
+from app.routes import agent, arena, defend, health, trace
 from app.settings import get_settings
 
 settings = get_settings()
@@ -34,3 +34,4 @@ app.include_router(health.router)
 app.include_router(defend.router)
 app.include_router(trace.router)
 app.include_router(arena.router)
+app.include_router(agent.router)
