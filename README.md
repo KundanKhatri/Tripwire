@@ -51,7 +51,11 @@ tool-returned content. We don't try to *recognize* every attack; we deny it
 The repo includes a victim-agent demo where an indirect prompt injection tries to
 read a secret file and email it to an attacker. The user only authorized
 "summarize a document" — so every malicious tool call is denied for lack of
-provenance:
+provenance. Run it yourself (real defense code, no mock):
+
+```bash
+cd apps/api && python -m app.agent.cli        # add --slow for a paced, recordable trace
+```
 
 ```
 [plan]    User asked to summarize a document.
