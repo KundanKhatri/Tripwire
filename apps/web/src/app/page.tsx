@@ -19,7 +19,14 @@ import {
   Sparkles,
   Mail,
   CheckCircle2,
+  ShieldAlert,
+  Bug,
+  Wrench,
+  Brain,
+  Coins,
+  Scale,
 } from "lucide-react";
+import Link from "next/link";
 import { AttackComposer } from "@/components/AttackComposer";
 import { GlassBox } from "@/components/GlassBox";
 import { defend } from "@/lib/api";
@@ -90,6 +97,45 @@ const SHIPPED = [
   "Bicep IaC · honest held-out benchmark · OWASP-mapped attack corpus",
 ];
 
+const THREATS = [
+  {
+    icon: Bug,
+    pain: "Indirect prompt injection",
+    painBody: "Hidden instructions ride in the documents, emails, and web pages your agent reads. The user's request was benign — the attack wasn't in it.",
+    answer: "L2 provenance denies any tool call that wasn't authorized by the real user request — the injected instruction has no authority to act.",
+  },
+  {
+    icon: Wrench,
+    pain: "Tool poisoning via MCP",
+    painBody: "A connected tool's metadata carries malicious instructions, or a trusted tool gets rug-pulled in an update. Your agent inherits the payload.",
+    answer: "Scoped capability tokens + (roadmap) hash-pinned tool manifests mean a changed or rogue tool can't silently gain new powers.",
+  },
+  {
+    icon: Brain,
+    pain: "Memory poisoning",
+    painBody: "False 'facts' planted into long-term memory persist across sessions and quietly steer every future decision the agent makes.",
+    answer: "Canary tripwires + provenance on memory writes (roadmap F4) flag untrusted writes and prove when tainted memory tries to act.",
+  },
+  {
+    icon: Coins,
+    pain: "Runaway cost loops",
+    painBody: "A confused or hijacked agent loops on tool calls and burns a five-figure bill before anyone notices. One documented loop ran 11 days.",
+    answer: "Cost & loop governor (roadmap F3) enforces hard per-task budgets and kills the loop before the bill — every action already passes through TripWire.",
+  },
+  {
+    icon: Eye,
+    pain: "Silent data exfiltration",
+    painBody: "Secrets leave through a rendered image URL, an outbound request, or an email the agent was tricked into sending. You never see it happen.",
+    answer: "L3 canaries seed decoy secrets; if one ever crosses the boundary it's hard proof of exfiltration — caught with zero false positives.",
+  },
+  {
+    icon: Scale,
+    pain: "No audit trail / compliance gap",
+    painBody: "When something goes wrong — or an auditor asks — most teams can't show what their agent actually did. EU AI Act penalties begin Aug 2026.",
+    answer: "Every decision produces a signed, replayable trace (Glass Box). The compliance audit ledger (roadmap F5) turns it into SOC2 / EU-AI-Act evidence.",
+  },
+];
+
 function Anchor({ id }: { id: string }) {
   return <span id={id} className="block -translate-y-20" />;
 }
@@ -123,11 +169,18 @@ export default function Home() {
           </a>
           <div className="hidden items-center gap-6 text-sm text-white/55 md:flex">
             <a href="#arena" className="transition hover:text-white">Arena</a>
+            <a href="#threats" className="transition hover:text-white">Threats</a>
             <a href="#how" className="transition hover:text-white">How it works</a>
             <a href="#business" className="transition hover:text-white">Business</a>
             <a href="#about" className="transition hover:text-white">About</a>
           </div>
           <div className="flex items-center gap-2">
+            <Link
+              href="/test-your-agent"
+              className="hidden rounded-lg bg-accent/15 px-3 py-1.5 text-sm font-medium text-accent transition hover:bg-accent/25 sm:flex"
+            >
+              Test your agent
+            </Link>
             <a
               href="/Tripwire/TripWire_Deck.pdf"
               className="hidden rounded-lg border border-ink-600 px-3 py-1.5 text-sm text-white/70 transition hover:text-white sm:flex"
@@ -164,17 +217,17 @@ export default function Home() {
             action layer. <span className="text-white/90">Don&apos;t take our word for it — try to break it.</span>
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <a
-              href="#arena"
+            <Link
+              href="/test-your-agent"
               className="glow-pulse inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-3 font-semibold text-ink-950 transition hover:bg-accent-glow"
             >
-              Enter the arena <ArrowDown className="h-4 w-4" />
-            </a>
+              <ShieldAlert className="h-4 w-4" /> Test your agent
+            </Link>
             <a
-              href="#how"
+              href="#arena"
               className="inline-flex items-center gap-2 rounded-lg border border-ink-600 px-5 py-3 font-semibold text-white/80 transition hover:border-accent/50 hover:text-white"
             >
-              See how it works <ArrowRight className="h-4 w-4" />
+              Enter the arena <ArrowDown className="h-4 w-4" />
             </a>
           </div>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-white/40">
@@ -275,6 +328,58 @@ export default function Home() {
         <p className="reveal mt-6 text-center text-sm text-white/45">
           These are the two layers an LLM firewall structurally cannot have. <span className="text-white/75">That&apos;s the moat.</span>
         </p>
+      </section>
+
+      {/* Agentic-era threats → TripWire's answer */}
+      <Anchor id="threats" />
+      <section className="mx-auto max-w-6xl px-6 py-14">
+        <div className="reveal max-w-3xl">
+          <span className="font-mono text-xs uppercase tracking-widest text-block">The agentic-era threat</span>
+          <h2 className="mt-3 text-2xl font-bold sm:text-4xl">
+            The moment an agent can <span className="grad-text">act</span>, your attack surface changes.
+          </h2>
+          <p className="mt-4 text-pretty leading-relaxed text-white/60">
+            A chatbot that only talks has a small blast radius. An agent that reads your data, calls
+            tools, spends money, and remembers — that&apos;s a new class of risk, and prompt filters
+            don&apos;t cover it. Here is what actually goes wrong in production, and what TripWire does
+            about each.
+          </p>
+        </div>
+
+        <div className="mt-9 grid gap-4 lg:grid-cols-2">
+          {THREATS.map((t, i) => (
+            <div
+              key={t.pain}
+              className={`reveal reveal-${Math.min(i + 1, 5)} card-lift rounded-xl border border-ink-600 bg-ink-900/60 p-5`}
+            >
+              <div className="flex items-center gap-3">
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-block/12">
+                  <t.icon className="h-5 w-5 text-block" />
+                </span>
+                <h3 className="text-lg font-semibold">{t.pain}</h3>
+              </div>
+              <p className="mt-3 text-sm leading-relaxed text-white/55">{t.painBody}</p>
+              <div className="mt-4 flex items-start gap-2 rounded-lg border border-allow/20 bg-allow/5 p-3">
+                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-allow" />
+                <p className="text-sm leading-relaxed text-white/75">{t.answer}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="reveal mt-8 flex flex-col items-center gap-3 rounded-2xl border border-accent/30 bg-gradient-to-br from-ink-900 to-ink-800 p-7 text-center">
+          <h3 className="text-xl font-bold sm:text-2xl">Which of these is your agent exposed to right now?</h3>
+          <p className="max-w-xl text-white/60">
+            Paste your agent&apos;s system prompt and get an instant security scorecard — free, no API
+            key, 30 seconds. See exactly what gets through, and what TripWire blocks.
+          </p>
+          <Link
+            href="/test-your-agent"
+            className="mt-2 inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-3 font-semibold text-ink-950 transition hover:bg-accent-glow"
+          >
+            <ShieldAlert className="h-4 w-4" /> Test your agent free <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </section>
 
       {/* How it works — architecture */}

@@ -48,6 +48,6 @@ export const LAYER_META: Record<LayerName, { label: string; short: string; blurb
   L5_learning_classifier: {
     label: "L5 · Learning Classifier",
     short: "L5",
-    blurb: "A model fine-tuned on the live corpus. Gets stronger every time it is attacked.",
+    blurb: "An embedding classifier over the live corpus. Gets stronger every time it is attacked.",
   },
 };
