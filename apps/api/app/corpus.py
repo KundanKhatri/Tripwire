@@ -21,8 +21,11 @@ from app.azure_clients import EmbeddingsClient
 _HERE = Path(__file__).resolve()
 _CANDIDATE_PATHS = [
     _HERE.parent / "data" / "seeds.jsonl",  # bundled in container build context
-    _HERE.parents[3] / "packages" / "attack-corpus" / "seeds.jsonl",  # repo root
 ]
+# Repo-root fallback for local dev. Guarded: the container path (/app/app/corpus.py)
+# is too shallow for parents[3], which would raise IndexError at import time.
+if len(_HERE.parents) > 3:
+    _CANDIDATE_PATHS.append(_HERE.parents[3] / "packages" / "attack-corpus" / "seeds.jsonl")
 
 
 def _resolve_corpus_path() -> Path | None:

@@ -33,11 +33,13 @@ async def startup() -> None:
     corpus = CorpusSearcher(embeddings)
     state.corpus_count = await corpus.build()
     state.corpus = corpus
+    l4 = L4BehavioralAnomaly(embeddings=embeddings)
+    await l4.warmup()  # embed anchor sets once (no-op if embeddings offline)
     state.pipeline = DefensePipeline(
         l1=L1SemanticFirewall(shields=shields, corpus=corpus),
         l2=L2CapabilityProvenance(settings=settings),
         l3=L3CanaryTokens(),
-        l4=L4BehavioralAnomaly(),
+        l4=l4,
         l5=L5LearningClassifier(),
     )
 

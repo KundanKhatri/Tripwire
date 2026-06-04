@@ -34,6 +34,9 @@ jobs:
       - name: Build (static export)
         env:
           GITHUB_PAGES: "true"
+          # Live Azure Container Apps defense engine; arena falls back to the
+          # local mirror automatically if it's unreachable.
+          NEXT_PUBLIC_API_BASE: "https://tripwire-api.nicemoss-a5f36a4f.koreacentral.azurecontainerapps.io"
         run: npm run build
       - name: Add .nojekyll
         run: touch out/.nojekyll
