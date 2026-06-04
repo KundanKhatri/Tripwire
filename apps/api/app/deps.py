@@ -35,12 +35,14 @@ async def startup() -> None:
     state.corpus = corpus
     l4 = L4BehavioralAnomaly(embeddings=embeddings)
     await l4.warmup()  # embed anchor sets once (no-op if embeddings offline)
+    l5 = L5LearningClassifier(embeddings=embeddings, corpus=corpus)
+    await l5.warmup()  # build class centroids (reuses corpus vectors; no-op offline)
     state.pipeline = DefensePipeline(
         l1=L1SemanticFirewall(shields=shields, corpus=corpus),
         l2=L2CapabilityProvenance(settings=settings),
         l3=L3CanaryTokens(),
         l4=l4,
-        l5=L5LearningClassifier(),
+        l5=l5,
     )
 
 
