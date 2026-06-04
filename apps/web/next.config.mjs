@@ -8,6 +8,7 @@ const repo = "Tripwire";
 const nextConfig = {
   reactStrictMode: true,
   output: "export", // fully static — arena runs client-side with the local mirror
+  trailingSlash: true, // emit /test-your-agent/index.html so directory URLs work on Pages
   images: { unoptimized: true },
   basePath: isPages ? `/${repo}` : "",
   assetPrefix: isPages ? `/${repo}/` : "",
