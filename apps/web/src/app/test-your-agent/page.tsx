@@ -267,13 +267,14 @@ function Scorecard({ result, onReset }: { result: AssessResponse; onReset: () =>
 function LeadForm({ grade, agentName }: { grade: string; agentName: string }) {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [website, setWebsite] = useState(""); // honeypot
   const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [err, setErr] = useState<string | null>(null);
 
   async function send() {
     setState("sending");
     setErr(null);
-    const res = await submitLead({ email, message, grade, agent_context: agentName });
+    const res = await submitLead({ email, message, grade, agent_context: agentName, website });
     if (res.ok) setState("done");
     else { setState("error"); setErr(res.error || "Something went wrong."); }
   }
@@ -295,6 +296,17 @@ function LeadForm({ grade, agentName }: { grade: string; agentName: string }) {
         This was a 10-attack sample. Get a complete security review of your agent — the full corpus,
         your real tool graph, and a hardening plan. Free for early teams.
       </p>
+      {/* Honeypot — hidden from users, bots fill it and get silently dropped */}
+      <input
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        value={website}
+        onChange={(e) => setWebsite(e.target.value)}
+        className="absolute left-[-9999px] h-0 w-0 opacity-0"
+      />
       <div className="mt-5 flex flex-col gap-3 sm:flex-row">
         <input
           type="email"

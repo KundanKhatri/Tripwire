@@ -17,14 +17,20 @@ structural judgment, not a live jailbreak:
 from __future__ import annotations
 
 import re
+import time
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+
 from pydantic import BaseModel, Field
 
 from app.deps import get_pipeline
+from app.ratelimit import make_dependency
 from app.schemas import DefendRequest, Verdict
 
 router = APIRouter(tags=["assess"])
+
+# Public + paid path (fans out to Azure). Cap per-IP request rate.
+_assess_rate = make_dependency(limit=15, window_s=60)
 
 # Each battery item: (type, payload, class, guardrail_index_that_mitigates_or_None)
 # class "action" = structurally unstoppable by a prompt; "prompt" = mitigable by a guardrail.
@@ -91,23 +97,44 @@ def _grade(exposed_ratio: float) -> str:
     return "A"
 
 
-@router.post("/assess", response_model=AssessResponse)
-async def assess(req: AssessRequest) -> AssessResponse:
+# The battery payloads are constant, so their TripWire verdicts don't depend on
+# the visitor's prompt. Compute them once and cache (TTL) — this removes ~40 Azure
+# calls per assessment, making /assess fast, cheap, and abuse-resistant.
+_BATTERY_TTL_S = 600.0
+_battery_cache: dict[str, object] = {"verdicts": None, "at": 0.0}
+
+
+async def _battery_verdicts() -> list[tuple[Verdict, str | None]]:
+    now = time.time()
+    cached = _battery_cache["verdicts"]
+    if cached is not None and now - float(_battery_cache["at"]) < _BATTERY_TTL_S:
+        return cached  # type: ignore[return-value]
     pipeline = get_pipeline()
+    out: list[tuple[Verdict, str | None]] = []
+    for _, payload, _, _ in _BATTERY:
+        result = await pipeline.evaluate(DefendRequest(payload=payload, inject_canaries=True))
+        reason = next((layer.reason for layer in result.layers if layer.reason), None)
+        out.append((result.verdict, reason))
+    _battery_cache["verdicts"] = out
+    _battery_cache["at"] = now
+    return out
+
+
+@router.post("/assess", response_model=AssessResponse, dependencies=[Depends(_assess_rate)])
+async def assess(req: AssessRequest) -> AssessResponse:
     prompt_l = req.system_prompt.lower()
 
     present = [bool(re.search(p, prompt_l)) for _, p in _GUARDRAILS]
     strengths = [label for (label, _), ok in zip(_GUARDRAILS, present) if ok]
     weaknesses = [label for (label, _), ok in zip(_GUARDRAILS, present) if not ok]
 
+    verdicts = await _battery_verdicts()
     attacks: list[AttackResult] = []
     exposed_count = 0
     caught = 0
-    for atype, payload, klass, guard_idx in _BATTERY:
-        result = await pipeline.evaluate(DefendRequest(payload=payload, inject_canaries=True))
-        if result.verdict in (Verdict.BLOCK, Verdict.REVIEW):
+    for (atype, payload, klass, guard_idx), (verdict, reason) in zip(_BATTERY, verdicts):
+        if verdict in (Verdict.BLOCK, Verdict.REVIEW):
             caught += 1
-        reason = next((layer.reason for layer in result.layers if layer.reason), None)
 
         if klass == "action":
             agent_exposed = True  # a prompt cannot provide provenance/canary
@@ -122,7 +149,7 @@ async def assess(req: AssessRequest) -> AssessResponse:
                 attack_type=atype,
                 attack_class=klass,
                 payload_preview=payload.replace("\n", " ")[:90],
-                tripwire_verdict=result.verdict,
+                tripwire_verdict=verdict,
                 tripwire_reason=reason,
                 agent_exposed=agent_exposed,
             )

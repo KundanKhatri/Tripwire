@@ -63,3 +63,13 @@ async def test_lead_valid_and_invalid_email() -> None:
         bad = await c.post("/lead", json={"email": "not-an-email", "grade": "F"})
     assert ok.json()["ok"] is True
     assert bad.json()["ok"] is False
+
+
+@pytest.mark.asyncio
+async def test_lead_honeypot_silently_dropped() -> None:
+    async with await _client() as c:
+        # Bot fills the hidden 'website' field -> looks ok to the bot, dropped server-side.
+        resp = await c.post(
+            "/lead", json={"email": "bot@spam.com", "website": "http://spam.example"}
+        )
+    assert resp.json()["ok"] is True

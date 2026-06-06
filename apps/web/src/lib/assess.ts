@@ -56,6 +56,7 @@ export interface LeadInput {
   agent_context?: string;
   message?: string;
   grade?: string;
+  website?: string; // honeypot — real users leave this empty
 }
 
 export async function submitLead(input: LeadInput): Promise<{ ok: boolean; error?: string }> {

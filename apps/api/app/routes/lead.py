@@ -11,13 +11,16 @@ import json
 import logging
 import re
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
+
+from app.ratelimit import make_dependency
 
 router = APIRouter(tags=["lead"])
 
 _log = logging.getLogger("tripwire.lead")
 _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+_lead_rate = make_dependency(limit=5, window_s=60)
 
 
 class LeadRequest(BaseModel):
@@ -26,6 +29,8 @@ class LeadRequest(BaseModel):
     message: str = Field("", max_length=2000)
     grade: str = Field("", max_length=4)
     source: str = Field("test-your-agent", max_length=60)
+    # Honeypot: real users never fill this (hidden field). Bots do.
+    website: str = Field("", max_length=200)
 
 
 class LeadResponse(BaseModel):
@@ -33,8 +38,11 @@ class LeadResponse(BaseModel):
     error: str | None = None
 
 
-@router.post("/lead", response_model=LeadResponse)
+@router.post("/lead", response_model=LeadResponse, dependencies=[Depends(_lead_rate)])
 async def capture_lead(req: LeadRequest) -> LeadResponse:
+    if req.website:
+        # Honeypot tripped — pretend success, drop silently.
+        return LeadResponse(ok=True)
     if not _EMAIL_RE.match(req.email.strip()):
         return LeadResponse(ok=False, error="Please enter a valid email address.")
 
