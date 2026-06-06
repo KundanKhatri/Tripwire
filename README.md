@@ -38,8 +38,12 @@ and enforces a 5-layer defense pipeline:
 | **L1** | Semantic Firewall | Pattern rules + Azure Prompt Shields + embedding similarity to a known-attack corpus |
 | **L2** | Capability Provenance | Every tool call must carry a signed token scoped to the real user request. Injected calls have no authority — denied. |
 | **L3** | Canary Tripwires | Decoy secrets seeded into context; if one ever leaves, it's proof of exfiltration. Zero false positives. |
-| **L4** | Behavioral Anomaly | Scores when the agent's actions diverge from the user's goal (goal hijack). |
-| **L5** | Learning Classifier | Curated, human-in-the-loop model that improves from real attacks. |
+| **L4** | Behavioral Anomaly | Azure-embedding goal-divergence: scores when an action's intent points toward hijack/exfiltration vs. the agent's legitimate purpose. |
+| **L5** | Learning Classifier | Embedding nearest-centroid over the live attack corpus; learns from new attacks. |
+
+All five layers are live (L1 + L4 + L5 use Azure OpenAI embeddings; L1 also calls
+Azure Prompt Shields). The API runs on Azure Container Apps and the arena calls it
+directly, with a local mirror fallback so the demo never breaks.
 
 The standout: **L2 + L3 stop the attacks an LLM firewall can't** — like indirect
 injection, where the user's request is benign and the attack hides in
@@ -67,6 +71,14 @@ cd apps/api && python -m app.agent.cli        # add --slow for a paced, recordab
 
 Try attacks yourself in the **[live arena](https://kundankhatri.github.io/Tripwire/)** —
 every payload runs the full pipeline and the Glass Box shows each layer's decision.
+
+## Test your own agent
+
+**[Test Your Agent →](https://kundankhatri.github.io/Tripwire/test-your-agent/)** — paste your
+agent's system prompt and get an instant security scorecard: which prompt-injection,
+tool-poisoning, and data-exfiltration attacks it's exposed to, and what TripWire blocks.
+Free, no API key, ~30 seconds. Backed by the live `POST /assess` endpoint (rate-limited,
+attack-battery cached) on Azure.
 
 ## Where it's going
 
